@@ -86,38 +86,64 @@ export function PrayerDisplay({
       return;
     }
 
-    // Create the text to speak
-    const textToSpeak = `${title}. ${subtitle || ''}. ${body}. Daily Affirmation: ${affirmation}. Action Step: ${actionStep}. ${whisperPrayer ? `Whisper Prayer: ${whisperPrayer}.` : ''} ${blessing}`;
+    try {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
 
-    // Create utterance
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utteranceRef.current = utterance;
+      // Create the text to speak
+      const textToSpeak = `${title}. ${subtitle || ''}. ${body}. Daily Affirmation: ${affirmation}. Action Step: ${actionStep}. ${whisperPrayer ? `Whisper Prayer: ${whisperPrayer}.` : ''} ${blessing}`;
 
-    // Configure voice settings
-    utterance.rate = 0.9; // Slightly slower for contemplative reading
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+      // Create utterance
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utteranceRef.current = utterance;
 
-    // Event handlers
-    utterance.onstart = () => {
-      setIsPlaying(true);
-      toast.success("Playing prayer audio");
-    };
+      // Configure voice settings
+      utterance.rate = 0.9; // Slightly slower for contemplative reading
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
 
-    utterance.onend = () => {
-      setIsPlaying(false);
-      utteranceRef.current = null;
-    };
+      // Wait for voices to load
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        // Prefer English voices
+        const englishVoice = voices.find(voice => voice.lang.startsWith('en'));
+        if (englishVoice) {
+          utterance.voice = englishVoice;
+        }
+      }
 
-    utterance.onerror = (event) => {
-      setIsPlaying(false);
-      utteranceRef.current = null;
-      toast.error("Failed to play audio");
-      console.error("Speech synthesis error:", event);
-    };
+      // Event handlers
+      utterance.onstart = () => {
+        setIsPlaying(true);
+        toast.success("Playing prayer audio");
+      };
 
-    // Start speaking
-    window.speechSynthesis.speak(utterance);
+      utterance.onend = () => {
+        setIsPlaying(false);
+        utteranceRef.current = null;
+      };
+
+      utterance.onerror = (event) => {
+        setIsPlaying(false);
+        utteranceRef.current = null;
+        console.error("Speech synthesis error:", event);
+        
+        // Provide more specific error messages
+        if (event.error === 'not-allowed') {
+          toast.error("Please interact with the page first to enable audio");
+        } else if (event.error === 'network') {
+          toast.error("Network error - check your connection");
+        } else {
+          toast.error("Unable to play audio. Try again.");
+        }
+      };
+
+      // Start speaking
+      window.speechSynthesis.speak(utterance);
+    } catch (error) {
+      console.error("Error in handleListen:", error);
+      toast.error("Failed to initialize audio playback");
+    }
   };
 
   const handleShare = async () => {

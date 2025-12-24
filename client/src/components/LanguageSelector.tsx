@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,21 +26,30 @@ export function LanguageSelector({
   currentLanguage,
   onLanguageChange,
 }: LanguageSelectorProps) {
+  const [open, setOpen] = useState(false);
   const currentLang = languages.find((lang) => lang.code === currentLanguage);
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="gap-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="gap-2"
+          onClick={() => setOpen(!open)}
+        >
           <Globe className="h-5 w-5" />
           <span className="sr-only">Select language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-48 z-50">
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
-            onClick={() => onLanguageChange(language.code)}
+            onClick={() => {
+              onLanguageChange(language.code);
+              setOpen(false);
+            }}
             className={
               currentLanguage === language.code
                 ? "bg-accent text-accent-foreground"
