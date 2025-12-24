@@ -37,10 +37,20 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
+// Get API URL, handling undefined/empty values
+const getApiUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  // Check if it's a valid string (not undefined, "undefined", or empty)
+  if (envUrl && envUrl !== "undefined" && envUrl.startsWith("http")) {
+    return envUrl;
+  }
+  return "/api/trpc";
+};
+
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: import.meta.env.VITE_API_URL || "/api/trpc",
+      url: getApiUrl(),
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
