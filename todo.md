@@ -30,10 +30,14 @@
 - [ ] Prayer themes/categories
 
 ## Deployment 🚀
-- [ ] Create GitHub repository
-- [ ] Push code to GitHub
+- [x] Create GitHub repository
+- [x] Push code to GitHub
+- [x] Backend deployed to Hetzner VPS (port 3001)
+- [x] PostgreSQL database migrated
+- [x] Cloudflare Tunnel configured (api.praywith.faith)
+- [x] PM2 managing API and tunnel services
+- [ ] Frontend deployed to Cloudflare Pages
 - [ ] Configure custom domain (praywith.faith)
-- [ ] Set up production environment
 - [ ] Test all features in production
 
 
