@@ -48,3 +48,18 @@
 - [x] Remove decorative drop caps from prayer body
 - [x] Simplify typography and spacing
 - [x] Keep design minimal and clean
+
+
+## New Features - In Progress 🔧
+- [x] Fix CORS configuration on backend
+- [x] Fix frontend tRPC client for production API
+- [ ] Test frontend-backend connection (redeploying)
+- [ ] Add language selector UI component
+- [ ] Implement Spanish prayer generation
+- [ ] Implement French prayer generation
+- [ ] Implement Portuguese prayer generation
+- [ ] Create Saved Prayers page with list view
+- [ ] Add search functionality to Saved Prayers
+- [ ] Add filtering by date to Saved Prayers
+- [ ] Test all new features
+- [ ] Deploy to production
