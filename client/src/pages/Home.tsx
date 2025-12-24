@@ -48,25 +48,22 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-border px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center backdrop-blur-md border border-white/10">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            </div>
-            <span className="font-serif font-medium text-lg tracking-tight text-foreground/80">PrayWith.Faith</span>
+            <span className="font-serif font-medium text-xl text-foreground">PrayWith.Faith</span>
           </div>
           
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <>
                 <Link href="/journal">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10 text-foreground/70">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70">
                     <BookOpen className="w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/chat">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10 text-foreground/70">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70">
                     <MessageCircle className="w-5 h-5" />
                   </Button>
                 </Link>
@@ -117,6 +114,7 @@ export default function Home() {
           </div>
         ) : prayer ? (
           <PrayerDisplay
+            id={prayer.id}
             date={new Date(prayer.date).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",

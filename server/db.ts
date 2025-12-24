@@ -195,8 +195,17 @@ export async function createChatSession(session: InsertChatSession) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(chatSessions).values(session);
-  return result;
+  await db.insert(chatSessions).values(session);
+  
+  // Return the most recent session for this user
+  const result = await db
+    .select()
+    .from(chatSessions)
+    .where(eq(chatSessions.userId, session.userId))
+    .orderBy(chatSessions.createdAt)
+    .limit(1);
+  
+  return result[0];
 }
 
 export async function getChatMessages(sessionId: number) {

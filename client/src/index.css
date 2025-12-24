@@ -5,7 +5,7 @@
 
 @theme inline {
   --font-serif: "Cormorant Garamond", serif;
-  --font-sans: "Geist", sans-serif;
+  --font-sans: "Inter", sans-serif;
   
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -31,91 +31,39 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  
-  --animate-fade-in: fade-in 0.7s ease-out forwards;
-  --animate-fade-up: fade-up 0.9s ease-out forwards;
-  --animate-pulse-slow: pulse-slow 8s ease-in-out infinite;
-  
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes fade-up {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.05); }
-  }
 }
 
 :root {
-  /* Ethereal Minimalism - Light Mode (Dawn) */
-  /* Soft Peach/Gold/Lavender */
-  --background: oklch(0.98 0.01 80); /* Very pale warm white */
-  --foreground: oklch(0.25 0.02 280); /* Deep indigo text */
+  /* Clean Minimal Design */
+  --background: oklch(1 0 0); /* Pure white */
+  --foreground: oklch(0.2 0 0); /* Near black */
   
-  --card: oklch(1 0 0 / 0.4); /* Glassmorphism base */
-  --card-foreground: oklch(0.25 0.02 280);
+  --card: oklch(0.99 0 0); /* Slightly off-white */
+  --card-foreground: oklch(0.2 0 0);
   
-  --popover: oklch(1 0 0 / 0.8);
-  --popover-foreground: oklch(0.25 0.02 280);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0 0);
   
-  --primary: oklch(0.45 0.12 280); /* Deep spiritual violet */
-  --primary-foreground: oklch(0.98 0.01 80);
+  --primary: oklch(0.45 0.15 250); /* Deep blue */
+  --primary-foreground: oklch(1 0 0);
   
-  --secondary: oklch(0.95 0.03 80); /* Soft peach accent */
-  --secondary-foreground: oklch(0.35 0.04 280);
+  --secondary: oklch(0.96 0 0); /* Light gray */
+  --secondary-foreground: oklch(0.3 0 0);
   
-  --muted: oklch(0.96 0.01 280);
-  --muted-foreground: oklch(0.55 0.03 280);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.5 0 0);
   
-  --accent: oklch(0.92 0.04 85); /* Warm gold accent */
-  --accent-foreground: oklch(0.35 0.04 280);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.2 0 0);
   
-  --destructive: oklch(0.6 0.15 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
   
-  --border: oklch(0.9 0.02 280 / 0.3);
-  --input: oklch(0.9 0.02 280 / 0.3);
-  --ring: oklch(0.45 0.12 280 / 0.3);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.45 0.15 250);
   
-  --radius: 1rem;
-}
-
-.dark {
-  /* Ethereal Minimalism - Dark Mode (Dusk) */
-  /* Deep Indigo/Violet/Magenta */
-  --background: oklch(0.15 0.04 280); /* Deep indigo */
-  --foreground: oklch(0.95 0.01 80); /* Pale warm white */
-  
-  --card: oklch(0.2 0.04 280 / 0.4);
-  --card-foreground: oklch(0.95 0.01 80);
-  
-  --popover: oklch(0.2 0.04 280 / 0.8);
-  --popover-foreground: oklch(0.95 0.01 80);
-  
-  --primary: oklch(0.7 0.1 280); /* Bright spiritual violet */
-  --primary-foreground: oklch(0.15 0.04 280);
-  
-  --secondary: oklch(0.25 0.05 280);
-  --secondary-foreground: oklch(0.9 0.02 80);
-  
-  --muted: oklch(0.25 0.03 280);
-  --muted-foreground: oklch(0.7 0.02 280);
-  
-  --accent: oklch(0.3 0.08 320); /* Deep magenta accent */
-  --accent-foreground: oklch(0.95 0.01 80);
-  
-  --destructive: oklch(0.4 0.15 25);
-  --destructive-foreground: oklch(0.95 0 0);
-  
-  --border: oklch(0.8 0.02 280 / 0.1);
-  --input: oklch(0.8 0.02 280 / 0.1);
-  --ring: oklch(0.7 0.1 280 / 0.3);
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -123,34 +71,11 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20 selection:text-primary;
-    background-image: url('/images/dawn-gradient.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    transition: background-image 1s ease-in-out;
-  }
-  
-  .dark body {
-    background-image: url('/images/dusk-gradient.jpg');
+    @apply bg-background text-foreground font-sans antialiased;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif font-medium tracking-tight;
-  }
-  
-  /* Glassmorphism Utilities */
-  .glass {
-    @apply bg-card/30 backdrop-blur-xl border border-white/10 shadow-lg;
-  }
-  
-  .glass-hover {
-    @apply hover:bg-card/40 transition-all duration-500;
-  }
-  
-  /* Typography Utilities */
-  .text-balance {
-    text-wrap: balance;
   }
 }
 
@@ -161,7 +86,7 @@
     margin-right: auto;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-    max-width: 800px; /* Narrower container for reading focus */
+    max-width: 800px;
   }
   
   .flex {

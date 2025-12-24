@@ -1,9 +1,13 @@
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Share2, Heart, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 
 interface PrayerProps {
+  id?: number;
   title: string;
   subtitle?: string;
   body: string;
@@ -16,6 +20,7 @@ interface PrayerProps {
 }
 
 export function PrayerDisplay({
+  id,
   title,
   subtitle,
   body,
@@ -25,14 +30,61 @@ export function PrayerDisplay({
   blessing,
   date,
 }: PrayerProps) {
-  // Animation variants for staggered entrance
+  const { isAuthenticated } = useAuth();
+  
+  // Save prayer mutation
+  const saveMutation = trpc.prayers.save.useMutation({
+    onSuccess: () => {
+      toast.success("Prayer saved to your collection");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to save prayer");
+    },
+  });
+  
+  const handleSave = () => {
+    if (!isAuthenticated) {
+      toast.error("Please sign in to save prayers");
+      window.location.href = getLoginUrl();
+      return;
+    }
+    if (!id) {
+      toast.error("Prayer ID not available");
+      return;
+    }
+    saveMutation.mutate({ prayerId: id });
+  };
+  
+  const handleShare = async () => {
+    const shareText = `${title}\n\n${body}\n\n- ${affirmation}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: shareText,
+          url: window.location.href,
+        });
+      } catch (error) {
+        // User cancelled share
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast.success("Prayer copied to clipboard");
+      } catch (error) {
+        toast.error("Failed to copy prayer");
+      }
+    }
+  };
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2,
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
       },
     },
   };
@@ -42,7 +94,7 @@ export function PrayerDisplay({
     show: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.8, ease: "easeOut" } as any
+      transition: { duration: 0.6, ease: "easeOut" } as any
     },
   };
 
@@ -51,93 +103,107 @@ export function PrayerDisplay({
       variants={container}
       initial="hidden"
       animate="show"
-      className="relative max-w-2xl mx-auto px-6 py-12 md:py-20 space-y-16"
+      className="max-w-2xl mx-auto px-6 py-12 md:py-16 space-y-12"
     >
-      {/* Header Section */}
-      <motion.header variants={item} className="text-center space-y-6">
-        <div className="inline-block px-3 py-1 rounded-full glass text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4">
+      {/* Header */}
+      <motion.header variants={item} className="text-center space-y-4">
+        <p className="text-sm text-muted-foreground uppercase tracking-wider">
           {date}
-        </div>
-        <h1 className="text-4xl md:text-6xl font-serif font-medium leading-tight text-balance text-primary">
+        </p>
+        <h1 className="text-4xl md:text-5xl font-serif font-medium leading-tight text-foreground">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-xl md:text-2xl font-serif italic text-muted-foreground text-balance">
+          <p className="text-xl text-muted-foreground italic">
             {subtitle}
           </p>
         )}
       </motion.header>
 
       {/* Prayer Body */}
-      <motion.div variants={item} className="prose prose-lg md:prose-xl prose-p:leading-relaxed prose-p:text-foreground/90 font-sans mx-auto">
+      <motion.div variants={item} className="space-y-6">
         {body.split('\n\n').map((paragraph, idx) => (
-          <p key={idx} className="mb-6 first-letter:text-5xl first-letter:font-serif first-letter:mr-3 first-letter:float-left first-letter:text-primary">
+          <p key={idx} className="text-lg leading-relaxed text-foreground/90">
             {paragraph}
           </p>
         ))}
       </motion.div>
 
       {/* Daily Affirmation */}
-      <motion.section variants={item} className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 blur-3xl -z-10" />
-        <div className="glass rounded-2xl p-8 md:p-10 text-center space-y-4 border-primary/10">
-          <h3 className="text-sm font-medium tracking-widest uppercase text-primary/70">Daily Affirmation</h3>
-          <p className="text-2xl md:text-3xl font-serif italic text-foreground leading-relaxed">
+      <motion.section variants={item}>
+        <div className="bg-muted/30 rounded-lg p-8 text-center space-y-3 border border-border">
+          <h3 className="text-xs font-medium tracking-wider uppercase text-muted-foreground">
+            Daily Affirmation
+          </h3>
+          <p className="text-xl md:text-2xl font-serif italic text-foreground leading-relaxed">
             "{affirmation}"
           </p>
         </div>
       </motion.section>
 
-      {/* Action Step & Whisper Prayer */}
-      <motion.section variants={item} className="space-y-8">
-        <div className="space-y-4">
-          <h3 className="text-xl font-serif font-medium text-primary flex items-center gap-3">
-            <span className="h-px flex-1 bg-primary/20"></span>
+      {/* Action Step */}
+      <motion.section variants={item} className="space-y-4">
+        <div className="border-t border-border pt-6">
+          <h3 className="text-sm font-medium text-primary uppercase tracking-wider text-center mb-4">
             Action Step
-            <span className="h-px flex-1 bg-primary/20"></span>
           </h3>
           <p className="text-lg text-foreground/80 leading-relaxed text-center">
             {actionStep}
           </p>
         </div>
-
-        {whisperPrayer && (
-          <div className="text-center space-y-2">
-            <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Whisper Prayer</span>
-            <p className="text-lg font-serif italic text-primary/80">
-              "{whisperPrayer}"
-            </p>
-          </div>
-        )}
       </motion.section>
 
+      {/* Whisper Prayer */}
+      {whisperPrayer && (
+        <motion.section variants={item} className="text-center space-y-2">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Whisper Prayer
+          </span>
+          <p className="text-lg font-serif italic text-foreground/70">
+            "{whisperPrayer}"
+          </p>
+        </motion.section>
+      )}
+
+      {/* Divider */}
+      <motion.div variants={item} className="flex justify-center">
+        <div className="w-16 h-px bg-border"></div>
+      </motion.div>
+
       {/* Blessing */}
-      <motion.footer variants={item} className="text-center pt-8 pb-12">
-        <div className="w-12 h-12 mx-auto mb-6 text-primary/40">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-          </svg>
-        </div>
-        <p className="text-xl md:text-2xl font-serif text-foreground/90 leading-relaxed max-w-xl mx-auto">
+      <motion.footer variants={item} className="text-center">
+        <p className="text-xl md:text-2xl font-serif text-foreground/90 leading-relaxed">
           {blessing}
         </p>
       </motion.footer>
 
-      {/* Action Bar */}
+      {/* Action Buttons */}
       <motion.div 
         variants={item}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 glass rounded-full px-6 py-3 flex items-center gap-4 z-50"
+        className="flex justify-center gap-3 pt-8"
       >
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/10 text-primary">
-          <Heart className="w-5 h-5" />
+        <Button 
+          variant="outline" 
+          size="lg" 
+          className="gap-2"
+          onClick={handleSave}
+          disabled={saveMutation.isPending}
+        >
+          <Heart className="w-4 h-4" />
+          {saveMutation.isPending ? "Saving..." : "Save"}
         </Button>
-        <div className="w-px h-4 bg-primary/20" />
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/10 text-primary">
-          <Volume2 className="w-5 h-5" />
+        <Button variant="outline" size="lg" className="gap-2" disabled>
+          <Volume2 className="w-4 h-4" />
+          Listen
         </Button>
-        <div className="w-px h-4 bg-primary/20" />
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/10 text-primary">
-          <Share2 className="w-5 h-5" />
+        <Button 
+          variant="outline" 
+          size="lg" 
+          className="gap-2"
+          onClick={handleShare}
+        >
+          <Share2 className="w-4 h-4" />
+          Share
         </Button>
       </motion.div>
     </motion.article>

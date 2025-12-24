@@ -14,10 +14,10 @@
 - [x] Database helpers
 
 ## In Progress 🚧
-- [ ] Journal feature (backend ready, frontend needed)
-- [ ] Chat feature (backend ready, frontend needed)
-- [ ] Save prayer functionality
-- [ ] Share prayer functionality
+- [x] Journal feature (backend ready, frontend needed)
+- [x] Chat feature (backend ready, frontend needed)
+- [x] Save prayer functionality
+- [x] Share prayer functionality
 - [ ] Audio prayer playback
 
 ## Planned 📋
@@ -35,3 +35,10 @@
 - [ ] Configure custom domain (praywith.faith)
 - [ ] Set up production environment
 - [ ] Test all features in production
+
+
+## Design Changes 🎨
+- [x] Change to clean white background (remove gradients)
+- [x] Remove decorative drop caps from prayer body
+- [x] Simplify typography and spacing
+- [x] Keep design minimal and clean
