@@ -84,3 +84,30 @@
 - [ ] Test mobile responsiveness across different devices
 - [ ] Verify authenticated user features work correctly
 - [ ] Add user feedback for button clicks (toasts, animations)
+
+
+## New Features - Phase 2 (Dec 24, 2025) 🚀
+
+### Authenticated Features Testing
+- [ ] Test Save Prayer functionality with authenticated user
+- [ ] Test Journal feature (backend ready, needs frontend testing)
+- [ ] Test Chat feature (backend ready, needs frontend testing)
+- [ ] Verify all authenticated API endpoints work correctly
+
+### Multi-Language Support
+- [ ] Design and implement language selector UI component
+- [ ] Add language state management
+- [ ] Implement Spanish prayer generation
+- [ ] Implement French prayer generation
+- [ ] Implement Portuguese prayer generation
+- [ ] Update prayer display to support multiple languages
+- [ ] Test language switching functionality
+
+### Mobile & PWA Optimization
+- [ ] Create PWA manifest.json
+- [ ] Implement service worker for offline support
+- [ ] Add app icons for different sizes
+- [ ] Test mobile responsive design on various devices
+- [ ] Optimize touch interactions
+- [ ] Add install prompt for PWA
+- [ ] Test offline functionality
