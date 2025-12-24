@@ -17,6 +17,7 @@ async function startServer() {
       "https://praywith.faith",
       "https://praywith-faith.pages.dev",
       "http://localhost:3000",
+      "http://5.161.49.163",
       /\.praywith-faith\.pages\.dev$/
     ],
     credentials: true,
