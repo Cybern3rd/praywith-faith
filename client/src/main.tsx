@@ -37,13 +37,13 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
-// Get API URL, handling undefined/empty values
+// Get API URL - use production URL in production, local in development
 const getApiUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  // Check if it's a valid string (not undefined, "undefined", or empty)
-  if (envUrl && envUrl !== "undefined" && envUrl.startsWith("http")) {
-    return envUrl;
+  // In production (deployed to Cloudflare Pages), use the production API
+  if (window.location.hostname.includes("pages.dev") || window.location.hostname === "praywith.faith") {
+    return "https://api.praywith.faith/api/trpc";
   }
+  // In development, use local API
   return "/api/trpc";
 };
 
