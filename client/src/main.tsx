@@ -37,20 +37,19 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
-// Get API URL - use production URL in production, local in development
-const getApiUrl = () => {
-  // In production (deployed to Cloudflare Pages), use the production API
-  if (window.location.hostname.includes("pages.dev") || window.location.hostname === "praywith.faith") {
-    return "https://api.praywith.faith/api/trpc";
-  }
-  // In development, use local API
-  return "/api/trpc";
-};
-
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: getApiUrl(),
+      url: () => {
+        // Determine URL at request time, not module load time
+        if (typeof window !== "undefined") {
+          const hostname = window.location.hostname;
+          if (hostname.includes("pages.dev") || hostname === "praywith.faith") {
+            return "https://api.praywith.faith/api/trpc";
+          }
+        }
+        return "/api/trpc";
+      },
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
