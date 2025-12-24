@@ -40,16 +40,7 @@ queryClient.getMutationCache().subscribe(event => {
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: () => {
-        // Determine URL at request time, not module load time
-        if (typeof window !== "undefined") {
-          const hostname = window.location.hostname;
-          if (hostname.includes("pages.dev") || hostname === "praywith.faith") {
-            return "https://api.praywith.faith/api/trpc";
-          }
-        }
-        return "/api/trpc";
-      },
+      url: "/api/trpc",
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
