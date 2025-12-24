@@ -3,7 +3,7 @@ import { getLoginUrl } from "@/const";
 import { PrayerDisplay } from "@/components/PrayerDisplay";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
-import { User, BookOpen, MessageCircle, LogOut, Loader2, Settings as SettingsIcon, Calendar as CalendarIcon } from "lucide-react";
+import { User, BookOpen, MessageCircle, LogOut, Loader2, Settings as SettingsIcon, Calendar as CalendarIcon, Heart } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useMemo, useState } from "react";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -79,18 +79,23 @@ export default function Home() {
             />
             {isAuthenticated ? (
               <>
+                <Link href="/saved">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Saved Prayers">
+                    <Heart className="w-5 h-5" />
+                  </Button>
+                </Link>
                 <Link href="/journal">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Journal">
                     <BookOpen className="w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/chat">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Chat">
                     <MessageCircle className="w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/settings">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Settings">
                     <SettingsIcon className="w-5 h-5" />
                   </Button>
                 </Link>

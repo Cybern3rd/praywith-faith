@@ -3,10 +3,11 @@ import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, Plus, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Loader2, Download } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { toast } from "sonner";
+import { exportJournalToPDF } from "@/lib/pdfExport";
 
 export default function Journal() {
   const { user, isAuthenticated } = useAuth();
@@ -61,14 +62,32 @@ export default function Journal() {
             </Button>
           </Link>
           <h1 className="font-serif font-medium text-xl text-foreground">Journal</h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-muted"
-            onClick={() => setIsCreating(!isCreating)}
-          >
-            <Plus className="w-5 h-5" />
-          </Button>
+          <div className="flex gap-2">
+            {entries && entries.length > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full hover:bg-muted"
+                onClick={() => {
+                  if (entries && entries.length > 0) {
+                    exportJournalToPDF(entries, user?.name);
+                    toast.success("Journal exported to PDF");
+                  }
+                }}
+                title="Export to PDF"
+              >
+                <Download className="w-5 h-5" />
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-muted"
+              onClick={() => setIsCreating(!isCreating)}
+            >
+              <Plus className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </nav>
 

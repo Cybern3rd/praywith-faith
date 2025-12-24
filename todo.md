@@ -137,3 +137,23 @@
 
 ### Future Features (Phase 4)
 - [ ] Community Prayer Requests feature
+
+
+## New Features - Phase 4 (Dec 24, 2025)
+
+### Social Media Preview Cards
+- [x] Add Open Graph meta tags to HTML
+- [x] Add Twitter Card meta tags
+- [x] Implement dynamic OG tags based on prayer content
+- [x] Generate OG image for prayers
+- [ ] Test sharing on Facebook, Twitter, WhatsApp (requires user testing)
+- [ ] Add structured data (JSON-LD) for SEO (future enhancement)
+
+### Prayer Journal Export
+- [x] Create PDF export functionality for saved prayers
+- [x] Create PDF export functionality for journal entries
+- [x] Add export button to Journal page
+- [x] Add export button to Saved Prayers page
+- [x] Design PDF layout with branding
+- [x] Include prayer content, dates, and user notes
+- [x] Test PDF generation and download
