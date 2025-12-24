@@ -36,8 +36,10 @@
 - [x] PostgreSQL database migrated
 - [x] Cloudflare Tunnel configured (api.praywith.faith)
 - [x] PM2 managing API and tunnel services
-- [ ] Frontend deployed to Cloudflare Pages
-- [ ] Configure custom domain (praywith.faith)
+- [x] GitHub Actions workflow for auto-deployment
+- [x] Frontend deployed to Cloudflare Pages
+- [x] Custom domain DNS configured (praywith.faith)
+- [ ] Fix frontend-backend connection (CORS/URL issue)
 - [ ] Test all features in production
 
 
