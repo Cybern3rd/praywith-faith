@@ -5,10 +5,14 @@ import { trpc } from "@/lib/trpc";
 import { ArrowLeft, Loader2, Download } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/lib/translations";
 import { exportPrayersToPDF } from "@/lib/pdfExport";
 
 export default function SavedPrayers() {
   const { user, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   // Fetch saved prayers
   const { data: savedPrayers, isLoading } = trpc.prayers.saved.useQuery(undefined, {
@@ -31,7 +35,7 @@ export default function SavedPrayers() {
       
       if (prayers.length > 0) {
         exportPrayersToPDF(prayers, user?.name);
-        toast.success("Prayers exported to PDF");
+        toast.success(t.exported);
       }
     }
   };
@@ -39,9 +43,9 @@ export default function SavedPrayers() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">Please sign in to view your saved prayers</p>
+        <p className="text-muted-foreground">{t.signIn}</p>
         <a href={getLoginUrl()}>
-          <Button>Sign In</Button>
+          <Button>{t.signIn}</Button>
         </a>
       </div>
     );
@@ -57,14 +61,14 @@ export default function SavedPrayers() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
-          <h1 className="font-serif font-medium text-xl text-foreground">Saved Prayers</h1>
+          <h1 className="font-serif font-medium text-xl text-foreground">{t.mySavedPrayers}</h1>
           {savedPrayers && savedPrayers.length > 0 && (
             <Button
               variant="ghost"
               size="icon"
               className="rounded-full hover:bg-muted"
               onClick={handleExport}
-              title="Export to PDF"
+              title={t.export}
             >
               <Download className="w-5 h-5" />
             </Button>

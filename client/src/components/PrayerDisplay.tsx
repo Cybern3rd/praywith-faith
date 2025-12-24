@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { useState, useRef, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/lib/translations";
 
 interface PrayerProps {
   id?: number;
@@ -32,6 +34,8 @@ export function PrayerDisplay({
   date,
 }: PrayerProps) {
   const { isAuthenticated } = useAuth();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -53,21 +57,21 @@ export function PrayerDisplay({
   // Save prayer mutation
   const saveMutation = trpc.prayers.save.useMutation({
     onSuccess: () => {
-      toast.success("Prayer saved to your collection");
+      toast.success(t.prayerSaved);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to save prayer");
+      toast.error(error.message || t.errorSaving);
     },
   });
   
   const handleSave = () => {
     if (!isAuthenticated) {
-      toast.error("Please sign in to save prayers");
+      toast.error(t.signIn);
       window.location.href = getLoginUrl();
       return;
     }
     if (!id) {
-      toast.error("Prayer ID not available");
+      toast.error(t.errorLoading);
       return;
     }
     saveMutation.mutate({ prayerId: id });
@@ -75,7 +79,7 @@ export function PrayerDisplay({
   
   const handleListen = () => {
     if (!isSupported) {
-      toast.error("Text-to-speech is not supported in your browser");
+      toast.error("Text-to-speech not supported");
       return;
     }
 
@@ -115,7 +119,7 @@ export function PrayerDisplay({
       // Event handlers
       utterance.onstart = () => {
         setIsPlaying(true);
-        toast.success("Playing prayer audio");
+        toast.success(t.listen);
       };
 
       utterance.onend = () => {
@@ -130,11 +134,11 @@ export function PrayerDisplay({
         
         // Provide more specific error messages
         if (event.error === 'not-allowed') {
-          toast.error("Please interact with the page first to enable audio");
+          toast.error("Please interact with the page first");
         } else if (event.error === 'network') {
-          toast.error("Network error - check your connection");
+          toast.error("Network error");
         } else {
-          toast.error("Unable to play audio. Try again.");
+          toast.error(t.tryAgain);
         }
       };
 
@@ -142,7 +146,7 @@ export function PrayerDisplay({
       window.speechSynthesis.speak(utterance);
     } catch (error) {
       console.error("Error in handleListen:", error);
-      toast.error("Failed to initialize audio playback");
+      toast.error(t.errorLoading);
     }
   };
 
@@ -163,9 +167,9 @@ export function PrayerDisplay({
       // Fallback: copy to clipboard
       try {
         await navigator.clipboard.writeText(shareText);
-        toast.success("Prayer copied to clipboard");
+        toast.success(t.copied);
       } catch (error) {
-        toast.error("Failed to copy prayer");
+        toast.error(t.errorSaving);
       }
     }
   };
@@ -224,7 +228,7 @@ export function PrayerDisplay({
       <motion.section variants={item}>
         <div className="bg-muted/30 rounded-lg p-8 text-center space-y-3 border border-border">
           <h3 className="text-xs font-medium tracking-wider uppercase text-muted-foreground">
-            Daily Affirmation
+            {t.dailyAffirmation}
           </h3>
           <p className="text-xl md:text-2xl font-serif italic text-foreground leading-relaxed">
             "{affirmation}"
@@ -236,7 +240,7 @@ export function PrayerDisplay({
       <motion.section variants={item} className="space-y-4">
         <div className="border-t border-border pt-6">
           <h3 className="text-sm font-medium text-primary uppercase tracking-wider text-center mb-4">
-            Action Step
+            {t.actionStep}
           </h3>
           <p className="text-lg text-foreground/80 leading-relaxed text-center">
             {actionStep}
@@ -248,7 +252,7 @@ export function PrayerDisplay({
       {whisperPrayer && (
         <motion.section variants={item} className="text-center space-y-2">
           <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Whisper Prayer
+            {t.whisperPrayer}
           </span>
           <p className="text-lg font-serif italic text-foreground/70">
             "{whisperPrayer}"
@@ -281,7 +285,7 @@ export function PrayerDisplay({
           disabled={saveMutation.isPending}
         >
           <Heart className="w-4 h-4" />
-          {saveMutation.isPending ? "Saving..." : "Save"}
+          {saveMutation.isPending ? t.loading : t.save}
         </Button>
         <Button 
           variant="outline" 
@@ -291,7 +295,7 @@ export function PrayerDisplay({
           disabled={!isSupported}
         >
           {isPlaying ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          {isPlaying ? "Stop" : "Listen"}
+          {isPlaying ? t.close : t.listen}
         </Button>
         <Button 
           variant="outline" 
@@ -300,7 +304,7 @@ export function PrayerDisplay({
           onClick={handleShare}
         >
           <Share2 className="w-4 h-4" />
-          Share
+          {t.share}
         </Button>
       </motion.div>
     </motion.article>

@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/lib/translations";
 import { PrayerCalendar } from "@/components/PrayerCalendar";
 import { format } from "date-fns";
 
@@ -16,6 +17,7 @@ export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
   const [hasTriedGeneration, setHasTriedGeneration] = useState(false);
   const { language, setLanguage } = useLanguage();
+  const t = useTranslation(language);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const queryClient = useQueryClient();
@@ -94,7 +96,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-border px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="font-serif font-medium text-xl text-foreground">PrayWith.Faith</span>
+            <span className="font-serif font-medium text-xl text-foreground">{t.appName}</span>
           </div>
           
           <div className="flex items-center gap-2">
@@ -105,22 +107,22 @@ export default function Home() {
             {isAuthenticated ? (
               <>
                 <Link href="/saved">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Saved Prayers">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title={t.savedPrayers}>
                     <Heart className="w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/journal">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Journal">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title={t.journal}>
                     <BookOpen className="w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/chat">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Chat">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title={t.chat}>
                     <MessageCircle className="w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/settings">
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title="Settings">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70" title={t.settings}>
                     <SettingsIcon className="w-5 h-5" />
                   </Button>
                 </Link>
@@ -154,7 +156,7 @@ export default function Home() {
             className="flex items-center gap-2"
           >
             <CalendarIcon className="h-4 w-4" />
-            {showCalendar ? 'Hide Calendar' : 'Browse Prayer History'}
+            {showCalendar ? t.close : t.browsePrayerHistory}
           </Button>
         </div>
 
@@ -173,12 +175,12 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
             <Loader2 className="w-12 h-12 animate-spin text-primary/50" />
             <p className="text-muted-foreground font-serif">
-              {isGenerating ? "Crafting today's prayer..." : "Loading..."}
+              {isGenerating ? t.craftingPrayer : t.loading}
             </p>
           </div>
         ) : error || generateMutation.isError ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-            <p className="text-destructive font-serif">Failed to load prayer</p>
+            <p className="text-destructive font-serif">{t.errorLoading}</p>
             <p className="text-sm text-muted-foreground max-w-md text-center">
               {generateMutation.error?.message || error?.message || "An error occurred"}
             </p>
@@ -189,7 +191,7 @@ export default function Home() {
               }} 
               variant="outline"
             >
-              Try Again
+              {t.tryAgain}
             </Button>
           </div>
         ) : prayer ? (

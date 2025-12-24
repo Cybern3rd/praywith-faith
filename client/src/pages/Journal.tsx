@@ -6,11 +6,15 @@ import { trpc } from "@/lib/trpc";
 import { ArrowLeft, Plus, Loader2, Download } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/lib/translations";
 import { toast } from "sonner";
 import { exportJournalToPDF } from "@/lib/pdfExport";
 
 export default function Journal() {
   const { user, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [isCreating, setIsCreating] = useState(false);
   const [newEntry, setNewEntry] = useState("");
 
@@ -25,16 +29,16 @@ export default function Journal() {
       setNewEntry("");
       setIsCreating(false);
       refetch();
-      toast.success("Journal entry saved");
+      toast.success(t.prayerSaved);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to save entry");
+      toast.error(error.message || t.errorSaving);
     },
   });
 
   const handleSave = () => {
     if (!newEntry.trim()) {
-      toast.error("Please write something first");
+      toast.error(t.writeYourThoughts);
       return;
     }
     createMutation.mutate({ content: newEntry });
@@ -43,9 +47,9 @@ export default function Journal() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">Please sign in to access your journal</p>
+        <p className="text-muted-foreground">{t.signIn}</p>
         <a href={getLoginUrl()}>
-          <Button>Sign In</Button>
+          <Button>{t.signIn}</Button>
         </a>
       </div>
     );
@@ -61,7 +65,7 @@ export default function Journal() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
-          <h1 className="font-serif font-medium text-xl text-foreground">Journal</h1>
+          <h1 className="font-serif font-medium text-xl text-foreground">{t.myJournal}</h1>
           <div className="flex gap-2">
             {entries && entries.length > 0 && (
               <Button
@@ -71,10 +75,10 @@ export default function Journal() {
                 onClick={() => {
                   if (entries && entries.length > 0) {
                     exportJournalToPDF(entries, user?.name);
-                    toast.success("Journal exported to PDF");
+                    toast.success(t.exported);
                   }
                 }}
-                title="Export to PDF"
+                title={t.export}
               >
                 <Download className="w-5 h-5" />
               </Button>
