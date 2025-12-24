@@ -6,14 +6,16 @@ import { trpc } from "@/lib/trpc";
 import { User, BookOpen, MessageCircle, LogOut, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useMemo, useState } from "react";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
   const [hasTriedGeneration, setHasTriedGeneration] = useState(false);
+  const { language, setLanguage } = useLanguage();
   
   // Get today's date in YYYY-MM-DD format
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
-  const language = useMemo(() => user?.preferredLanguage || "en", [user?.preferredLanguage]);
   
   // Fetch today's prayer
   const { data: prayer, isLoading, error, refetch } = trpc.prayers.today.useQuery({
@@ -54,7 +56,11 @@ export default function Home() {
             <span className="font-serif font-medium text-xl text-foreground">PrayWith.Faith</span>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <LanguageSelector 
+              currentLanguage={language} 
+              onLanguageChange={setLanguage} 
+            />
             {isAuthenticated ? (
               <>
                 <Link href="/journal">
