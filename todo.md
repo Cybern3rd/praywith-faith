@@ -111,3 +111,29 @@
 - [x] Optimize touch interactions
 - [x] Add install prompt for PWA
 - [x] Test offline functionality
+
+
+## New Features - Phase 3 (Dec 24, 2025)
+
+### Email Notification System
+- [x] Design notification settings UI component
+- [x] Add notification preferences page/modal
+- [x] Implement time picker for daily reminder
+- [x] Create backend notification scheduling system
+- [x] Integrate with existing notification API
+- [ ] Add email template for daily prayers (requires email service provider)
+- [ ] Test email delivery and scheduling (requires email service provider)
+- [ ] Add unsubscribe functionality (requires email service provider)
+
+### Prayer History Calendar
+- [x] Design calendar UI component
+- [x] Implement date navigation (previous/next)
+- [x] Create calendar grid view with dates
+- [x] Add backend API endpoint for prayer history
+- [x] Implement date filtering in database queries
+- [x] Connect calendar to prayer display
+- [x] Add loading states and empty states
+- [x] Test calendar navigation and date selection
+
+### Future Features (Phase 4)
+- [ ] Community Prayer Requests feature

@@ -8,6 +8,13 @@
       "when": 1766592061465,
       "tag": "0000_salty_hiroim",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766599573314,
+      "tag": "0001_outstanding_winter_soldier",
+      "breakpoints": true
     }
   ]
 }

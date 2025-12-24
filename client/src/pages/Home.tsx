@@ -3,24 +3,33 @@ import { getLoginUrl } from "@/const";
 import { PrayerDisplay } from "@/components/PrayerDisplay";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
-import { User, BookOpen, MessageCircle, LogOut, Loader2 } from "lucide-react";
+import { User, BookOpen, MessageCircle, LogOut, Loader2, Settings as SettingsIcon, Calendar as CalendarIcon } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useMemo, useState } from "react";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PrayerCalendar } from "@/components/PrayerCalendar";
+import { format } from "date-fns";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
   const [hasTriedGeneration, setHasTriedGeneration] = useState(false);
   const { language, setLanguage } = useLanguage();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
   
-  // Get today's date in YYYY-MM-DD format
-  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+  // Get selected date in YYYY-MM-DD format
+  const dateStr = useMemo(() => format(selectedDate, 'yyyy-MM-dd'), [selectedDate]);
   
-  // Fetch today's prayer
+  // Fetch prayer for selected date
   const { data: prayer, isLoading, error, refetch } = trpc.prayers.today.useQuery({
     language,
-    date: today,
+    date: dateStr,
+  });
+
+  // Fetch available prayer dates for calendar
+  const { data: availableDates = [] } = trpc.prayers.availableDates.useQuery({
+    language,
   });
 
   // Generate prayer mutation
@@ -33,16 +42,23 @@ export default function Home() {
     },
   });
 
-  // Auto-generate if prayer doesn't exist
+  // Auto-generate if prayer doesn't exist for today
+  const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
   useEffect(() => {
-    if (!isLoading && !prayer && !hasTriedGeneration && !generateMutation.isPending) {
+    if (isToday && !isLoading && !prayer && !hasTriedGeneration && !generateMutation.isPending) {
       setHasTriedGeneration(true);
       generateMutation.mutate({
         language,
-        date: today,
+        date: dateStr,
       });
     }
-  }, [isLoading, prayer, hasTriedGeneration, generateMutation.isPending, language, today]);
+  }, [isToday, isLoading, prayer, hasTriedGeneration, generateMutation.isPending, language, dateStr]);
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setHasTriedGeneration(false);
+    setShowCalendar(false);
+  };
 
   const isGenerating = generateMutation.isPending;
   const showLoading = isLoading || isGenerating;
@@ -73,6 +89,11 @@ export default function Home() {
                     <MessageCircle className="w-5 h-5" />
                   </Button>
                 </Link>
+                <Link href="/settings">
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted text-foreground/70">
+                    <SettingsIcon className="w-5 h-5" />
+                  </Button>
+                </Link>
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -95,6 +116,29 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1 pt-20 pb-32">
+        {/* Calendar Toggle Button */}
+        <div className="max-w-5xl mx-auto px-6 mb-6">
+          <Button
+            variant="outline"
+            onClick={() => setShowCalendar(!showCalendar)}
+            className="flex items-center gap-2"
+          >
+            <CalendarIcon className="h-4 w-4" />
+            {showCalendar ? 'Hide Calendar' : 'Browse Prayer History'}
+          </Button>
+        </div>
+
+        {/* Calendar */}
+        {showCalendar && (
+          <div className="max-w-5xl mx-auto px-6 mb-8">
+            <PrayerCalendar
+              selectedDate={selectedDate}
+              onDateSelect={handleDateSelect}
+              availableDates={availableDates}
+            />
+          </div>
+        )}
+
         {showLoading ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
             <Loader2 className="w-12 h-12 animate-spin text-primary/50" />

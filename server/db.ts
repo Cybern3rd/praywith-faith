@@ -153,6 +153,19 @@ export async function getUserSavedPrayers(userId: number) {
   return result;
 }
 
+export async function getAvailablePrayerDates(language: "en" | "es" | "fr" | "pt") {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ date: prayers.date })
+    .from(prayers)
+    .where(eq(prayers.language, language))
+    .orderBy(prayers.date);
+
+  return result.map(r => r.date);
+}
+
 /**
  * Journal Helpers
  */

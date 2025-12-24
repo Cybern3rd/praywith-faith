@@ -107,3 +107,19 @@ export const chatMessages = pgTable("chat_messages", {
 
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertChatMessage = typeof chatMessages.$inferInsert;
+
+/**
+ * Notification settings - user preferences for email notifications
+ */
+export const notificationSettings = pgTable("notification_settings", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("userId").notNull().unique(),
+  enabled: integer("enabled").default(0).notNull(), // 0 = false, 1 = true (PostgreSQL boolean as int)
+  time: varchar("time", { length: 5 }).default("08:00").notNull(), // HH:MM format
+  timezone: varchar("timezone", { length: 50 }).default("UTC").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export type NotificationSetting = typeof notificationSettings.$inferSelect;
+export type InsertNotificationSetting = typeof notificationSettings.$inferInsert;
