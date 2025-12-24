@@ -74,3 +74,13 @@
 - [ ] Deploy frontend to new server
 - [ ] Configure Cloudflare Tunnel on new server
 - [ ] Test complete application on new server
+
+
+## Testing Issues Found (Dec 24, 2025) 🐛
+
+- [ ] Implement Listen button functionality (currently disabled - needs text-to-speech)
+- [ ] Test Share button on various devices (implementation exists but needs verification)
+- [ ] Add loading states and error handling for all interactive buttons
+- [ ] Test mobile responsiveness across different devices
+- [ ] Verify authenticated user features work correctly
+- [ ] Add user feedback for button clicks (toasts, animations)

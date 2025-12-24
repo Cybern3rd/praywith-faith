@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { Share2, Heart, Volume2 } from "lucide-react";
+import { Share2, Heart, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import { useState, useRef, useEffect } from "react";
 
 interface PrayerProps {
   id?: number;
@@ -31,6 +32,23 @@ export function PrayerDisplay({
   date,
 }: PrayerProps) {
   const { isAuthenticated } = useAuth();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isSupported, setIsSupported] = useState(true);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    // Check if speech synthesis is supported
+    if (!('speechSynthesis' in window)) {
+      setIsSupported(false);
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      if (utteranceRef.current) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
   
   // Save prayer mutation
   const saveMutation = trpc.prayers.save.useMutation({
@@ -55,6 +73,53 @@ export function PrayerDisplay({
     saveMutation.mutate({ prayerId: id });
   };
   
+  const handleListen = () => {
+    if (!isSupported) {
+      toast.error("Text-to-speech is not supported in your browser");
+      return;
+    }
+
+    if (isPlaying) {
+      // Stop current playback
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+      return;
+    }
+
+    // Create the text to speak
+    const textToSpeak = `${title}. ${subtitle || ''}. ${body}. Daily Affirmation: ${affirmation}. Action Step: ${actionStep}. ${whisperPrayer ? `Whisper Prayer: ${whisperPrayer}.` : ''} ${blessing}`;
+
+    // Create utterance
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utteranceRef.current = utterance;
+
+    // Configure voice settings
+    utterance.rate = 0.9; // Slightly slower for contemplative reading
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Event handlers
+    utterance.onstart = () => {
+      setIsPlaying(true);
+      toast.success("Playing prayer audio");
+    };
+
+    utterance.onend = () => {
+      setIsPlaying(false);
+      utteranceRef.current = null;
+    };
+
+    utterance.onerror = (event) => {
+      setIsPlaying(false);
+      utteranceRef.current = null;
+      toast.error("Failed to play audio");
+      console.error("Speech synthesis error:", event);
+    };
+
+    // Start speaking
+    window.speechSynthesis.speak(utterance);
+  };
+
   const handleShare = async () => {
     const shareText = `${title}\n\n${body}\n\n- ${affirmation}`;
     
@@ -192,9 +257,15 @@ export function PrayerDisplay({
           <Heart className="w-4 h-4" />
           {saveMutation.isPending ? "Saving..." : "Save"}
         </Button>
-        <Button variant="outline" size="lg" className="gap-2" disabled>
-          <Volume2 className="w-4 h-4" />
-          Listen
+        <Button 
+          variant="outline" 
+          size="lg" 
+          className="gap-2"
+          onClick={handleListen}
+          disabled={!isSupported}
+        >
+          {isPlaying ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          {isPlaying ? "Stop" : "Listen"}
         </Button>
         <Button 
           variant="outline" 
