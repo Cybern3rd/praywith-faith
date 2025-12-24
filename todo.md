@@ -63,3 +63,14 @@
 - [ ] Add filtering by date to Saved Prayers
 - [ ] Test all new features
 - [ ] Deploy to production
+
+
+## Server Migration 🖥️
+- [x] Export PrayWith-Faith database from n8n server
+- [x] Stop and remove PrayWith-Faith services from n8n server
+- [x] Clean up PrayWith-Faith files from n8n server
+- [x] Set up fresh Hetzner server for PrayWith-Faith
+- [ ] Deploy backend to new server
+- [ ] Deploy frontend to new server
+- [ ] Configure Cloudflare Tunnel on new server
+- [ ] Test complete application on new server
