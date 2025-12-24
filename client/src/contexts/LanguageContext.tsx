@@ -14,14 +14,35 @@ const LANGUAGE_STORAGE_KEY = "praywith-language";
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    // Get language from localStorage or default to English
+    console.log('[LanguageContext] Initializing language state');
+    
+    // Check URL parameter first
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+    if (urlLang && ['en', 'es', 'fr', 'pt'].includes(urlLang)) {
+      console.log('[LanguageContext] Language from URL:', urlLang);
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, urlLang);
+      return urlLang as Language;
+    }
+    
+    // Fall back to localStorage
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    console.log('[LanguageContext] Language from localStorage:', stored);
     return (stored as Language) || "en";
   });
 
   const setLanguage = (newLanguage: Language) => {
-    setLanguageState(newLanguage);
+    console.log('[LanguageContext] setLanguage called with:', newLanguage);
+    console.log('[LanguageContext] Current language before update:', language);
+    
+    // Save to localStorage
     localStorage.setItem(LANGUAGE_STORAGE_KEY, newLanguage);
+    
+    // Reload page with new language parameter to force fresh data fetch
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', newLanguage);
+    console.log('[LanguageContext] Reloading with URL:', url.toString());
+    window.location.href = url.toString();
   };
 
   useEffect(() => {

@@ -165,3 +165,11 @@
 - [x] Fix Listen button "Failed to play audio" error
 - [x] Fix Language selector dropdown menu not opening
 - [x] Test both fixes in production environment
+
+
+## Critical Bug - Language Switching (Dec 24, 2025)
+
+- [ ] Fix language switching - prayer content not changing when language is selected
+- [ ] Investigate tRPC query caching issue
+- [ ] Implement proper query refetch mechanism
+- [ ] Test all four languages (English, Spanish, French, Portuguese)

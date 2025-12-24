@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { 
@@ -108,7 +108,7 @@ export async function getTodayPrayer(language: "en" | "es" | "fr" | "pt", date: 
   const result = await db
     .select()
     .from(prayers)
-    .where(eq(prayers.language, language) && eq(prayers.date, date))
+    .where(and(eq(prayers.language, language), eq(prayers.date, date)))
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;

@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { User, BookOpen, MessageCircle, LogOut, Loader2, Settings as SettingsIcon, Calendar as CalendarIcon, Heart } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PrayerCalendar } from "@/components/PrayerCalendar";
@@ -17,15 +18,39 @@ export default function Home() {
   const { language, setLanguage } = useLanguage();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
+  const queryClient = useQueryClient();
   
   // Get selected date in YYYY-MM-DD format
   const dateStr = useMemo(() => format(selectedDate, 'yyyy-MM-dd'), [selectedDate]);
   
   // Fetch prayer for selected date
-  const { data: prayer, isLoading, error, refetch } = trpc.prayers.today.useQuery({
-    language,
-    date: dateStr,
-  });
+  const { data: prayer, isLoading, error, refetch } = trpc.prayers.today.useQuery(
+    {
+      language,
+      date: dateStr,
+    },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: false,
+      staleTime: 0, // Always consider data stale
+      cacheTime: 0, // Don't cache
+    }
+  );
+
+  // Invalidate and refetch prayer when language changes
+  useEffect(() => {
+    console.log('[Language Change] Language changed to:', language);
+    console.log('[Language Change] Current date:', dateStr);
+    console.log('[Language Change] Invalidating all queries...');
+    
+    // Invalidate all tRPC queries to force refetch
+    queryClient.invalidateQueries().then(() => {
+      console.log('[Language Change] Queries invalidated, refetching...');
+      return refetch();
+    }).then(() => {
+      console.log('[Language Change] Refetch completed');
+    });
+  }, [language, dateStr, queryClient, refetch]);
 
   // Fetch available prayer dates for calendar
   const { data: availableDates = [] } = trpc.prayers.availableDates.useQuery({
