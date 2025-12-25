@@ -1,27 +1,27 @@
-import { int, mysqlTable, mysqlEnum, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { integer, pgTable, pgEnum, text, timestamp, varchar, serial } from "drizzle-orm/pg-core";
 
 /**
  * Core user table backing auth flow.
  * Extend this file with additional tables as your product grows.
  * Columns use camelCase to match both database fields and generated types.
  */
-export const roleEnum = mysqlEnum("role", ["user", "admin"]);
-export const languageEnum = mysqlEnum("language", ["en", "es", "fr", "pt"]);
-export const chatRoleEnum = mysqlEnum("chat_role", ["user", "assistant", "system"]);
+export const roleEnum = pgEnum("role", ["user", "admin"]);
+export const languageEnum = pgEnum("language", ["en", "es", "fr", "pt"]);
+export const chatRoleEnum = pgEnum("chat_role", ["user", "assistant", "system"]);
 
-export const users = mysqlTable("users", {
+export const users = pgTable("users", {
   /**
    * Surrogate primary key. Auto-incremented numeric value managed by the database.
    * Use this for relations between tables.
    */
-  id: int("id").primaryKey().autoincrement(),
+  id: serial("id").primaryKey(),
   /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: roleEnum.default("user").notNull(),
-  preferredLanguage: languageEnum.default("en").notNull(),
+  role: roleEnum("role").default("user").notNull(),
+  preferredLanguage: languageEnum("preferredLanguage").default("en").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -33,9 +33,9 @@ export type InsertUser = typeof users.$inferInsert;
 /**
  * Prayers table - stores all generated prayers
  */
-export const prayers = mysqlTable("prayers", {
-  id: int("id").primaryKey().autoincrement(),
-  language: languageEnum.notNull(),
+export const prayers = pgTable("prayers", {
+  id: serial("id").primaryKey(),
+  language: languageEnum("language").notNull(),
   date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
   eventType: varchar("eventType", { length: 100 }), // holiday, season, weekly, regular
   title: text("title").notNull(),
@@ -54,10 +54,10 @@ export type InsertPrayer = typeof prayers.$inferInsert;
 /**
  * Saved prayers - user's bookmarked prayers
  */
-export const savedPrayers = mysqlTable("saved_prayers", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  prayerId: int("prayerId").notNull(),
+export const savedPrayers = pgTable("saved_prayers", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  prayerId: integer("prayerId").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -67,10 +67,10 @@ export type InsertSavedPrayer = typeof savedPrayers.$inferInsert;
 /**
  * Journal entries - user's personal reflections
  */
-export const journalEntries = mysqlTable("journal_entries", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  prayerId: int("prayerId"), // Optional link to a prayer
+export const journalEntries = pgTable("journal_entries", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  prayerId: integer("prayerId"), // Optional link to a prayer
   content: text("content").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -82,10 +82,10 @@ export type InsertJournalEntry = typeof journalEntries.$inferInsert;
 /**
  * Chat sessions - conversation threads
  */
-export const chatSessions = mysqlTable("chat_sessions", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  prayerId: int("prayerId"), // Optional link to a prayer
+export const chatSessions = pgTable("chat_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  prayerId: integer("prayerId"), // Optional link to a prayer
   title: varchar("title", { length: 255 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -97,10 +97,10 @@ export type InsertChatSession = typeof chatSessions.$inferInsert;
 /**
  * Chat messages - individual messages in conversations
  */
-export const chatMessages = mysqlTable("chat_messages", {
-  id: int("id").primaryKey().autoincrement(),
-  sessionId: int("sessionId").notNull(),
-  role: chatRoleEnum.notNull(),
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("sessionId").notNull(),
+  role: chatRoleEnum("role").notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -111,10 +111,10 @@ export type InsertChatMessage = typeof chatMessages.$inferInsert;
 /**
  * Notification settings - user preferences for email notifications
  */
-export const notificationSettings = mysqlTable("notification_settings", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull().unique(),
-  enabled: int("enabled").default(0).notNull(), // 0 = false, 1 = true (MySQL boolean as int)
+export const notificationSettings = pgTable("notification_settings", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
+  enabled: integer("enabled").default(0).notNull(), // 0 = false, 1 = true (MySQL boolean as int)
   time: varchar("time", { length: 5 }).default("08:00").notNull(), // HH:MM format
   timezone: varchar("timezone", { length: 50 }).default("UTC").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
