@@ -86,3 +86,26 @@
 - [ ] Test Open Graph preview on Facebook/Twitter debugger (will test after deployment)
 - [ ] Save checkpoint with social sharing feature (ready to save)
 - [ ] Deploy to production via Manus → GitHub → Production (next step)
+
+
+## Production Deployment - Phase 12 (Dec 25, 2025)
+
+### Logo Fix
+- [x] Make "PrayWith-Faith" logo/text clickable and link to homepage
+
+### Manus → GitHub → Production Pipeline
+- [ ] Save final checkpoint in Manus
+- [ ] Push changes to GitHub repository
+- [ ] Click Publish button in Manus UI to deploy to production
+- [ ] Verify deployment successful on https://praywith.faith
+
+### Clerk Production Configuration
+- [ ] Add praywith.faith to Clerk dashboard allowed origins
+- [ ] Update production environment variables with Clerk keys
+- [ ] Test authentication on production domain
+
+### Automated Prayer Generation Setup
+- [ ] SSH into production server
+- [ ] Run `bash scripts/setup-cron.sh` to configure PM2 cron job
+- [ ] Verify cron job is running and scheduled for midnight
+- [ ] Test prayer generation for all 4 languages

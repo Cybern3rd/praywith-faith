@@ -101,9 +101,11 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-border px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="font-serif font-medium text-xl text-foreground">{t.appName}</span>
-          </div>
+          <Link href="/">
+            <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+              <span className="font-serif font-medium text-xl text-foreground">{t.appName}</span>
+            </div>
+          </Link>
           
           <div className="flex items-center gap-2">
             <LanguageSelector 
