@@ -7,9 +7,13 @@ import { ArrowLeft, Send, Loader2, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/lib/translations";
 
 export default function Chat() {
   const { user, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -79,9 +83,9 @@ export default function Chat() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">Please sign in to access chat</p>
+        <p className="text-muted-foreground">{t.signInToChat}</p>
         <a href={getLoginUrl()}>
-          <Button>Sign In</Button>
+          <Button>{t.signIn}</Button>
         </a>
       </div>
     );
@@ -97,7 +101,7 @@ export default function Chat() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
-          <h1 className="font-serif font-medium text-xl text-foreground">Spiritual Chat</h1>
+          <h1 className="font-serif font-medium text-xl text-foreground">{t.spiritualChat}</h1>
           <Button
             variant="ghost"
             size="icon"
@@ -142,11 +146,10 @@ export default function Chat() {
               <MessageCircle className="w-12 h-12 text-muted-foreground/50" />
               <div>
                 <p className="text-lg font-serif text-foreground mb-2">
-                  Welcome to Spiritual Chat
+                  {t.welcomeToChat}
                 </p>
                 <p className="text-sm text-muted-foreground max-w-md">
-                  Ask questions, seek guidance, or share your thoughts. I'm here to support
-                  your spiritual journey.
+                  {t.chatDescription}
                 </p>
               </div>
             </div>
@@ -167,7 +170,7 @@ export default function Chat() {
         <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-border p-6">
           <div className="max-w-4xl mx-auto flex gap-3">
             <Input
-              placeholder="Type your message..."
+              placeholder={t.typeMessage}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}

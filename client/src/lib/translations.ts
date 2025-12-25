@@ -77,6 +77,14 @@ export const translations = {
     spanish: "Spanish",
     french: "French",
     portuguese: "Portuguese",
+    
+    // Chat
+    spiritualChat: "Spiritual Chat",
+    newConversation: "New Conversation",
+    typeMessage: "Type your message...",
+    welcomeToChat: "Welcome to Spiritual Chat",
+    chatDescription: "Ask questions, seek guidance, or share your thoughts. I'm here to support your spiritual journey.",
+    signInToChat: "Please sign in to access chat",
   },
   
   es: {
@@ -155,6 +163,14 @@ export const translations = {
     spanish: "Español",
     french: "Francés",
     portuguese: "Portugués",
+    
+    // Chat
+    spiritualChat: "Chat Espiritual",
+    newConversation: "Nueva Conversación",
+    typeMessage: "Escribe tu mensaje...",
+    welcomeToChat: "Bienvenido al Chat Espiritual",
+    chatDescription: "Haz preguntas, busca orientación o comparte tus pensamientos. Estoy aquí para apoyar tu viaje espiritual.",
+    signInToChat: "Por favor inicia sesión para acceder al chat",
   },
   
   fr: {
@@ -233,6 +249,14 @@ export const translations = {
     spanish: "Espagnol",
     french: "Français",
     portuguese: "Portugais",
+    
+    // Chat
+    spiritualChat: "Chat Spirituel",
+    newConversation: "Nouvelle Conversation",
+    typeMessage: "Tapez votre message...",
+    welcomeToChat: "Bienvenue au Chat Spirituel",
+    chatDescription: "Posez des questions, cherchez des conseils ou partagez vos pensées. Je suis là pour soutenir votre voyage spirituel.",
+    signInToChat: "Veuillez vous connecter pour accéder au chat",
   },
   
   pt: {
@@ -311,6 +335,14 @@ export const translations = {
     spanish: "Espanhol",
     french: "Francês",
     portuguese: "Português",
+    
+    // Chat
+    spiritualChat: "Chat Espiritual",
+    newConversation: "Nova Conversa",
+    typeMessage: "Digite sua mensagem...",
+    welcomeToChat: "Bem-vindo ao Chat Espiritual",
+    chatDescription: "Faça perguntas, busque orientação ou compartilhe seus pensamentos. Estou aqui para apoiar sua jornada espiritual.",
+    signInToChat: "Por favor, faça login para acessar o chat",
   },
 } as const;
 

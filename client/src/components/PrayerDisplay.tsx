@@ -66,8 +66,13 @@ export function PrayerDisplay({
   
   const handleSave = () => {
     if (!isAuthenticated) {
-      toast.error(t.signIn);
-      window.location.href = getLoginUrl();
+      toast.error(t.signInToChat, {
+        description: "Create a free account to save prayers and access more features",
+        duration: 5000,
+      });
+      setTimeout(() => {
+        window.location.href = getLoginUrl();
+      }, 1500);
       return;
     }
     if (!id) {
@@ -106,33 +111,6 @@ export function PrayerDisplay({
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
 
-      // Wait for voices to load and select language-specific voice
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        // Map language codes to voice language prefixes
-        const languageMap: Record<string, string> = {
-          'en': 'en',
-          'es': 'es',
-          'fr': 'fr',
-          'pt': 'pt'
-        };
-        
-        const targetLang = languageMap[language] || 'en';
-        
-        // Try to find a voice matching the current language
-        let selectedVoice = voices.find(voice => voice.lang.startsWith(targetLang));
-        
-        // Fallback to English if language-specific voice not found
-        if (!selectedVoice) {
-          selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
-        }
-        
-        if (selectedVoice) {
-          utterance.voice = selectedVoice;
-          console.log(`[Speech] Using voice: ${selectedVoice.name} (${selectedVoice.lang})`);
-        }
-      }
-
       // Event handlers
       utterance.onstart = () => {
         setIsPlaying(true);
@@ -159,8 +137,47 @@ export function PrayerDisplay({
         }
       };
 
-      // Start speaking
-      window.speechSynthesis.speak(utterance);
+      // Function to set up and speak with proper voice
+      const setupAndSpeak = () => {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          // Map language codes to voice language prefixes
+          const languageMap: Record<string, string> = {
+            'en': 'en',
+            'es': 'es',
+            'fr': 'fr',
+            'pt': 'pt'
+          };
+          
+          const targetLang = languageMap[language] || 'en';
+          
+          // Try to find a voice matching the current language
+          let selectedVoice = voices.find(voice => voice.lang.startsWith(targetLang));
+          
+          // Fallback to English if language-specific voice not found
+          if (!selectedVoice) {
+            selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+          }
+          
+          if (selectedVoice) {
+            utterance.voice = selectedVoice;
+            console.log(`[Speech] Using voice: ${selectedVoice.name} (${selectedVoice.lang})`);
+          }
+        }
+        
+        // Start speaking
+        window.speechSynthesis.speak(utterance);
+      };
+
+      // Ensure voices are loaded before speaking
+      if (window.speechSynthesis.getVoices().length > 0) {
+        setupAndSpeak();
+      } else {
+        // Wait for voices to load
+        window.speechSynthesis.addEventListener('voiceschanged', setupAndSpeak, { once: true });
+        // Fallback timeout in case voiceschanged never fires
+        setTimeout(setupAndSpeak, 100);
+      }
     } catch (error) {
       console.error("Error in handleListen:", error);
       toast.error(t.errorLoading);

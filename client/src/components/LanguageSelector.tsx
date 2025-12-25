@@ -36,7 +36,7 @@ export function LanguageSelector({
           variant="ghost" 
           size="icon" 
           className="gap-2"
-          onClick={() => setOpen(!open)}
+          aria-label="Select language"
         >
           <Globe className="h-5 w-5" />
           <span className="sr-only">Select language</span>
