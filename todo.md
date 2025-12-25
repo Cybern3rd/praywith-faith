@@ -117,3 +117,137 @@
 - [x] Test authentication flow after fix (site loads without errors)
 - [ ] Save checkpoint with working Clerk authentication (ready to save)
 - [ ] Deploy to production
+
+
+## Comprehensive User Testing - Phase 14 (Dec 25, 2025)
+
+### Phase 1: Core Prayer Viewing ✓
+- [x] Prayer loads correctly on production
+- [x] Date displays correctly (DECEMBER 24, 2025)
+- [x] Title displays correctly
+- [x] Subtitle displays correctly
+- [x] Prayer body displays correctly with proper formatting
+- [x] Daily affirmation displays correctly
+- [x] Action step displays correctly
+- [x] Whisper prayer displays correctly
+- [x] Blessing displays correctly
+- [x] Save, Listen, Share buttons visible and styled
+
+### Phase 2: Language Switching
+- [ ] Test language selector dropdown opens
+- [ ] Test switching to Spanish (es)
+- [ ] Test switching to French (fr)
+- [ ] Test switching to Portuguese (pt)
+- [ ] Test switching back to English (en)
+- [ ] Verify prayer content changes correctly
+- [ ] Verify UI labels translate correctly
+
+### Phase 3: User Authentication
+- [ ] Test sign-in button (top right icon)
+- [ ] Test Clerk authentication modal opens
+- [ ] Test Google OAuth login
+- [ ] Test email/password login
+- [ ] Test user profile displays after login
+- [ ] Test logout functionality
+- [ ] Verify session persistence across page refreshes
+
+### Phase 4: Prayer History
+- [ ] Test "Browse Prayer History" button
+- [ ] Test calendar modal opens
+- [ ] Test navigating to different months
+- [ ] Test selecting past dates
+- [ ] Test viewing prayers from different dates
+- [ ] Test closing calendar modal
+
+### Phase 5: Interactive Features
+- [ ] Test Save button (requires authentication)
+- [ ] Test Listen button (text-to-speech)
+- [ ] Test Share button opens share menu
+- [ ] Test Facebook share
+- [ ] Test Twitter/X share
+- [ ] Test WhatsApp share
+- [ ] Test native Web Share API (mobile)
+
+### Issues Found During Testing
+(To be populated as issues are discovered)
+
+### Fixes Applied
+(To be populated as fixes are implemented)
+
+
+## Comprehensive User Testing Results - Phase 14 (Dec 25, 2025)
+
+### Phase 1: Core Prayer Viewing ✅ COMPLETED
+- [x] Prayer loads correctly on production
+- [x] Date displays correctly (DECEMBER 24, 2025)
+- [x] Title displays correctly
+- [x] Subtitle displays correctly
+- [x] Prayer body displays correctly with proper formatting
+- [x] Daily affirmation displays correctly
+- [x] Action step displays correctly
+- [x] Whisper prayer displays correctly
+- [x] Blessing displays correctly
+- [x] Save, Listen, Share buttons visible and styled
+
+### Phase 2: Language Switching ⚠️ PARTIAL
+- [x] Test language selector dropdown opens
+- [x] Test switching to Spanish (es) - WORKS PERFECTLY
+- [x] Verify Spanish prayer content displays correctly
+- [x] Verify all 4 languages exist in production database
+- [ ] Test switching to French (fr) - Pending Cloudflare cache clear
+- [ ] Test switching to Portuguese (pt) - Pending Cloudflare cache clear
+- [ ] Test switching back to English (en)
+
+**Note:** French and Portuguese prayers exist in database and work when tested directly on server. Cloudflare CDN is caching old API responses. Cache was purged, waiting for propagation (5-30 seconds typical).
+
+### Phase 3-5: Not Yet Tested
+- [ ] User authentication (Clerk sign-in/sign-out)
+- [ ] Prayer history calendar
+- [ ] Save/Listen/Share interactive features
+
+### Issues Found During Testing
+
+1. **Cloudflare CDN Caching API Responses** ⚠️
+   - **Severity:** Low (expected CDN behavior)
+   - **Impact:** Language switching delayed by cache TTL
+   - **Solution:** Add Cache-Control headers or Cloudflare Page Rule to bypass cache for `/api/*`
+
+2. **Database Driver Fixed** ✅
+   - **Problem:** MySQL drivers used with PostgreSQL database
+   - **Solution:** Migrated to postgres-js driver, updated schema
+   - **Status:** RESOLVED
+
+3. **PM2 Configuration Fixed** ✅
+   - **Problem:** Running wrong build file
+   - **Solution:** Updated ecosystem.config.js
+   - **Status:** RESOLVED
+
+### Production Status: ✅ OPERATIONAL
+
+**Working Features:**
+- ✅ Frontend serving correctly
+- ✅ Backend API responding
+- ✅ PostgreSQL database connected
+- ✅ English prayers working
+- ✅ Spanish prayers working
+- ✅ Automated cron job scheduled
+- ✅ SSL/HTTPS working
+- ✅ Cloudflare CDN active
+
+**Pending Verification:**
+- ⏳ French prayers (data exists, cache clearing)
+- ⏳ Portuguese prayers (data exists, cache clearing)
+- ⏳ User authentication flow
+- ⏳ Interactive features
+
+### Next Actions
+- [ ] Wait for Cloudflare cache to fully clear (5-30 min)
+- [ ] Verify French and Portuguese languages
+- [ ] Test user authentication end-to-end
+- [ ] Test prayer history calendar
+- [ ] Test Save/Listen/Share features
+- [ ] Create final checkpoint after all tests pass
+- [ ] Remove debug logging from getTodayPrayer function
+
+### Files Created
+- [x] TEST_REPORT.md - Comprehensive testing documentation
