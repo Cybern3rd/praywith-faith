@@ -1,6 +1,8 @@
 import { eq, and } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle as drizzlePg } from "drizzle-orm/postgres-js";
+import { drizzle as drizzleMysql } from "drizzle-orm/mysql2";
 import postgres from "postgres";
+import mysql from "mysql2/promise";
 import { 
   InsertUser, users,
   prayers, InsertPrayer,
@@ -17,8 +19,19 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      const queryClient = postgres(process.env.DATABASE_URL!);
-      _db = drizzle(queryClient);
+      const connectionString = process.env.DATABASE_URL!;
+      const isPostgres = connectionString.startsWith("postgres://") || connectionString.startsWith("postgresql://");
+      const isMysql = connectionString.startsWith("mysql://");
+
+      if (isPostgres) {
+        const queryClient = postgres(connectionString);
+        _db = drizzlePg(queryClient);
+      } else if (isMysql) {
+        const connection = mysql.createPool(connectionString);
+        _db = drizzleMysql(connection, { mode: "default" });
+      } else {
+        throw new Error("Unsupported database type. DATABASE_URL must start with postgres:// or mysql://");
+      }
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
