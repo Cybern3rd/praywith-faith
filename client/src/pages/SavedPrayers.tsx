@@ -1,5 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { SignInButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { ArrowLeft, Loader2, Download } from "lucide-react";
@@ -44,9 +44,9 @@ export default function SavedPrayers() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-muted-foreground">{t.signIn}</p>
-        <a href={getLoginUrl()}>
+        <SignInButton mode="modal">
           <Button>{t.signIn}</Button>
-        </a>
+        </SignInButton>
       </div>
     );
   }

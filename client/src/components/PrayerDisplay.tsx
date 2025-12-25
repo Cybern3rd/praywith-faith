@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+// Removed Manus getLoginUrl - now using Clerk
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTranslation } from "@/lib/translations";
@@ -70,9 +70,7 @@ export function PrayerDisplay({
         description: "Create a free account to save prayers and access more features",
         duration: 5000,
       });
-      setTimeout(() => {
-        window.location.href = getLoginUrl();
-      }, 1500);
+      // Clerk sign-in is handled by the SignInButton in the header
       return;
     }
     if (!id) {

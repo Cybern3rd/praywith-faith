@@ -23,7 +23,13 @@ export default function Home() {
   const queryClient = useQueryClient();
   
   // Get selected date in YYYY-MM-DD format
-  const dateStr = useMemo(() => format(selectedDate, 'yyyy-MM-dd'), [selectedDate]);
+  // Use formatInTimeZone or ensure we're using local date to avoid timezone issues
+  const dateStr = useMemo(() => {
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(selectedDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }, [selectedDate]);
   
   // Fetch prayer for selected date
   const { data: prayer, isLoading, error, refetch } = trpc.prayers.today.useQuery(
