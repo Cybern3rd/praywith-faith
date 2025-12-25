@@ -196,3 +196,17 @@
 - [x] Add logging for automated generation
 - [x] Test cron job execution
 - [ ] Deploy cron configuration to production server (manual deployment required due to SSH connection issues)
+
+
+## New Features - Phase 7 (Dec 24, 2025 - Evening)
+
+### Date Display Fix
+- [ ] Investigate why date shows Dec 23 instead of Dec 24, 2025
+- [ ] Fix database connection issue (see DATABASE_TROUBLESHOOTING.md)
+- [ ] Test date display in browser after database is connected
+
+### Language-Specific Voice Selection
+- [x] Update Listen feature to detect current language
+- [x] Map languages to appropriate voice selections (es, fr, pt)
+- [x] Test voice selection for all 4 languages (will verify on production)
+- [x] Ensure fallback to English if language-specific voice unavailable

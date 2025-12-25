@@ -106,13 +106,30 @@ export function PrayerDisplay({
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
 
-      // Wait for voices to load
+      // Wait for voices to load and select language-specific voice
       const voices = window.speechSynthesis.getVoices();
       if (voices.length > 0) {
-        // Prefer English voices
-        const englishVoice = voices.find(voice => voice.lang.startsWith('en'));
-        if (englishVoice) {
-          utterance.voice = englishVoice;
+        // Map language codes to voice language prefixes
+        const languageMap: Record<string, string> = {
+          'en': 'en',
+          'es': 'es',
+          'fr': 'fr',
+          'pt': 'pt'
+        };
+        
+        const targetLang = languageMap[language] || 'en';
+        
+        // Try to find a voice matching the current language
+        let selectedVoice = voices.find(voice => voice.lang.startsWith(targetLang));
+        
+        // Fallback to English if language-specific voice not found
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+        }
+        
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+          console.log(`[Speech] Using voice: ${selectedVoice.name} (${selectedVoice.lang})`);
         }
       }
 
