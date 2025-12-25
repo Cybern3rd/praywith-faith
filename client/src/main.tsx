@@ -38,11 +38,27 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
+// Create trpc client with Clerk session token
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
       url: "/api/trpc",
       transformer: superjson,
+      async headers() {
+        // Get Clerk session token if available
+        try {
+          const { getToken } = await import('@clerk/clerk-react');
+          const token = await getToken();
+          if (token) {
+            return {
+              authorization: `Bearer ${token}`,
+            };
+          }
+        } catch (error) {
+          console.error('[TRPC] Failed to get Clerk token:', error);
+        }
+        return {};
+      },
       fetch(input, init) {
         return globalThis.fetch(input, {
           ...(init ?? {}),

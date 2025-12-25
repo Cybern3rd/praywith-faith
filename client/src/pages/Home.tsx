@@ -1,9 +1,8 @@
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import { PrayerDisplay } from "@/components/PrayerDisplay";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
-import { User, BookOpen, MessageCircle, LogOut, Loader2, Settings as SettingsIcon, Calendar as CalendarIcon, Heart } from "lucide-react";
+import { User, BookOpen, MessageCircle, Loader2, Settings as SettingsIcon, Calendar as CalendarIcon, Heart } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -14,7 +13,8 @@ import { PrayerCalendar } from "@/components/PrayerCalendar";
 import { format } from "date-fns";
 
 export default function Home() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isSignedIn } = useUser();
+  const isAuthenticated = !!isSignedIn;
   const [hasTriedGeneration, setHasTriedGeneration] = useState(false);
   const { language, setLanguage } = useLanguage();
   const t = useTranslation(language);
@@ -126,21 +126,14 @@ export default function Home() {
                     <SettingsIcon className="w-5 h-5" />
                   </Button>
                 </Link>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="rounded-full hover:bg-white/10 text-foreground/70"
-                  onClick={() => logout()}
-                >
-                  <LogOut className="w-5 h-5" />
-                </Button>
+                <UserButton afterSignOutUrl="/" />
               </>
             ) : (
-              <a href={getLoginUrl()}>
+              <SignInButton mode="modal">
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10 text-foreground/70">
                   <User className="w-5 h-5" />
                 </Button>
-              </a>
+              </SignInButton>
             )}
           </div>
         </div>
