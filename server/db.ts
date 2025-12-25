@@ -103,15 +103,25 @@ export async function getUserByOpenId(openId: string) {
  */
 export async function getTodayPrayer(language: "en" | "es" | "fr" | "pt", date: string) {
   const db = await getDb();
-  if (!db) return undefined;
+  console.log("[getTodayPrayer] db instance:", !!db, "language:", language, "date:", date);
+  if (!db) {
+    console.log("[getTodayPrayer] Database not available");
+    return undefined;
+  }
 
-  const result = await db
-    .select()
-    .from(prayers)
-    .where(and(eq(prayers.language, language), eq(prayers.date, date)))
-    .limit(1);
-
-  return result.length > 0 ? result[0] : undefined;
+  try {
+    const result = await db
+      .select()
+      .from(prayers)
+      .where(and(eq(prayers.language, language), eq(prayers.date, date)))
+      .limit(1);
+    
+    console.log("[getTodayPrayer] Query result:", result.length, "rows");
+    return result.length > 0 ? result[0] : undefined;
+  } catch (error) {
+    console.error("[getTodayPrayer] Query error:", error);
+    return undefined;
+  }
 }
 
 export async function createPrayer(prayer: InsertPrayer) {
