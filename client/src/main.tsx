@@ -30,7 +30,7 @@ queryClient.getMutationCache().subscribe(event => {
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: "https://api.praywith.faith/api/trpc",
       transformer: superjson,
       async headers() {
         // Clerk authentication is handled server-side via cookies
