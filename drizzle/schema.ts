@@ -20,8 +20,8 @@ export const users = pgTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: roleEnum("role").default("user").notNull(),
-  preferredLanguage: languageEnum("preferredLanguage").default("en").notNull(),
+  role: roleEnum("role").$type<"user" | "admin">().default("user").notNull(),
+  preferredLanguage: languageEnum("preferredLanguage").$type<"en" | "es" | "fr" | "pt">().default("en").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -35,7 +35,7 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const prayers = pgTable("prayers", {
   id: serial("id").primaryKey(),
-  language: languageEnum("language").notNull(),
+  language: languageEnum("language").$type<"en" | "es" | "fr" | "pt">().notNull(),
   date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
   eventType: varchar("eventType", { length: 100 }), // holiday, season, weekly, regular
   title: text("title").notNull(),
@@ -100,7 +100,7 @@ export type InsertChatSession = typeof chatSessions.$inferInsert;
 export const chatMessages = pgTable("chat_messages", {
   id: serial("id").primaryKey(),
   sessionId: integer("sessionId").notNull(),
-  role: chatRoleEnum("role").notNull(),
+  role: chatRoleEnum("role").$type<"user" | "assistant" | "system">().notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
