@@ -15,6 +15,13 @@
       "when": 1766599573314,
       "tag": "0001_outstanding_winter_soldier",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766627820521,
+      "tag": "0002_youthful_sandman",
+      "breakpoints": true
     }
   ]
 }

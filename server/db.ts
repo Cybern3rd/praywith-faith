@@ -1,6 +1,6 @@
 import { eq, and } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import { 
   InsertUser, users,
   prayers, InsertPrayer,
@@ -17,13 +17,8 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      const client = postgres(process.env.DATABASE_URL, {
-        ssl: 'prefer',
-        max: 10,
-        idle_timeout: 20,
-        connect_timeout: 10,
-      });
-      _db = drizzle(client);
+      const poolConnection = mysql.createPool(process.env.DATABASE_URL);
+      _db = drizzle(poolConnection);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
