@@ -109,3 +109,11 @@
 - [ ] Run `bash scripts/setup-cron.sh` to configure PM2 cron job
 - [ ] Verify cron job is running and scheduled for midnight
 - [ ] Test prayer generation for all 4 languages
+
+
+## Critical Fix - Clerk getToken Error (Dec 25, 2025 - Phase 13)
+- [x] Fix getToken is not a function error in main.tsx (removed dynamic import, Clerk uses cookies)
+- [x] Ensure Clerk session token is properly passed to tRPC (via cookies with credentials: include)
+- [x] Test authentication flow after fix (site loads without errors)
+- [ ] Save checkpoint with working Clerk authentication (ready to save)
+- [ ] Deploy to production

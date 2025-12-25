@@ -33,18 +33,8 @@ const trpcClient = trpc.createClient({
       url: "/api/trpc",
       transformer: superjson,
       async headers() {
-        // Get Clerk session token if available
-        try {
-          const { getToken } = await import('@clerk/clerk-react');
-          const token = await getToken();
-          if (token) {
-            return {
-              authorization: `Bearer ${token}`,
-            };
-          }
-        } catch (error) {
-          console.error('[TRPC] Failed to get Clerk token:', error);
-        }
+        // Clerk authentication is handled server-side via cookies
+        // The session token is automatically included in the request
         return {};
       },
       fetch(input, init) {
