@@ -183,27 +183,52 @@ export function PrayerDisplay({
   };
 
   const handleShare = async () => {
-    const shareText = `${title}\n\n${body}\n\n- ${affirmation}`;
-    
+    const shareTitle = `PrayWith.Faith - ${title}`;
+    const shareText = `${title}\n\n${body.substring(0, 200)}...\n\nRead the full prayer at:`;
+    const shareUrl = window.location.href;
+
+    // Try native Web Share API first (mobile)
     if (navigator.share) {
       try {
         await navigator.share({
-          title: title,
+          title: shareTitle,
           text: shareText,
-          url: window.location.href,
+          url: shareUrl,
         });
+        toast.success(t.shared);
+        return;
       } catch (error) {
-        // User cancelled share
-      }
-    } else {
-      // Fallback: copy to clipboard
-      try {
-        await navigator.clipboard.writeText(shareText);
-        toast.success(t.copied);
-      } catch (error) {
-        toast.error(t.errorSaving);
+        // User cancelled or error occurred
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Share error:', error);
+        }
       }
     }
+
+    // Fallback: Show share options dialog
+    const encodedText = encodeURIComponent(`${shareTitle}\n\n${shareText}`);
+    const encodedUrl = encodeURIComponent(shareUrl);
+    
+    // Create share URLs
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+    const whatsappUrl = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
+    
+    // For desktop, open a simple share menu
+    const shareMenu = document.createElement('div');
+    shareMenu.innerHTML = `
+      <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 9999; min-width: 300px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">Share this prayer</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <a href="${facebookUrl}" target="_blank" style="padding: 12px; background: #1877f2; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 500;">Share on Facebook</a>
+          <a href="${twitterUrl}" target="_blank" style="padding: 12px; background: #1da1f2; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 500;">Share on Twitter</a>
+          <a href="${whatsappUrl}" target="_blank" style="padding: 12px; background: #25d366; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 500;">Share on WhatsApp</a>
+          <button onclick="this.parentElement.parentElement.parentElement.remove()" style="padding: 12px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 8px;">Cancel</button>
+        </div>
+      </div>
+      <div onclick="this.parentElement.remove()" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9998;"></div>
+    `;
+    document.body.appendChild(shareMenu);
   };
   const container = {
     hidden: { opacity: 0 },
