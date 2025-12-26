@@ -259,3 +259,19 @@
 
 ### Files Created
 - [x] TEST_REPORT.md - Comprehensive testing documentation
+
+
+## New Feature Implementation (User Request)
+
+### Cache-Control Headers
+- [x] Add Cache-Control headers to API responses to prevent Cloudflare caching
+- [ ] Test language switching after cache header implementation
+- [ ] Deploy to production and verify
+
+### User Authentication Testing
+- [ ] Test Clerk sign-in flow (email, Google, etc.)
+- [ ] Test saving prayers while authenticated
+- [ ] Verify prayers are saved to database
+- [ ] Test saved prayers page displays correctly
+- [ ] Test user session persistence
+- [ ] Document any authentication issues found

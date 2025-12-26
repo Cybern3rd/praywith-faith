@@ -32,6 +32,14 @@ async function startServer() {
   // Clerk authentication is handled via cookies from frontend
   // No OAuth callback routes needed
   
+  // Add Cache-Control headers to prevent API caching
+  app.use("/api/trpc", (req, res, next) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    next();
+  });
+  
   // tRPC API
   app.use(
     "/api/trpc",
