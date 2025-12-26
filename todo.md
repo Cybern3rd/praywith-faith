@@ -265,13 +265,16 @@
 
 ### Cache-Control Headers
 - [x] Add Cache-Control headers to API responses to prevent Cloudflare caching
-- [ ] Test language switching after cache header implementation
-- [ ] Deploy to production and verify
+- [x] Test language switching after cache header implementation
+- [x] Deploy to production and verify (cf-cache-status: DYNAMIC confirmed)
 
 ### User Authentication Testing
-- [ ] Test Clerk sign-in flow (email, Google, etc.)
-- [ ] Test saving prayers while authenticated
-- [ ] Verify prayers are saved to database
+- [x] Test Clerk sign-in flow (Google OAuth successful)
+- [x] Test saving prayers while authenticated
+- [x] Verify prayers are saved to database (ID: 30001, User: 300001)
 - [ ] Test saved prayers page displays correctly
-- [ ] Test user session persistence
-- [ ] Document any authentication issues found
+- [x] Test user session persistence - **BUG FOUND: Session lost after page interaction**
+- [x] Document authentication issues:
+  * Session persistence issue: User authentication state is lost after certain interactions
+  * Saved Prayers page not accessible due to session loss
+  * Need to investigate Clerk session management configuration
