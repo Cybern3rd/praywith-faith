@@ -278,3 +278,17 @@
   * Session persistence issue: User authentication state is lost after certain interactions
   * Saved Prayers page not accessible due to session loss
   * Need to investigate Clerk session management configuration
+
+
+## URGENT: Production Site Issue (Dec 26, 2025)
+
+- [ ] Diagnose why production site shows blank white screen
+- [ ] Check Hetzner server status (PM2, Nginx)
+- [ ] Review server logs for errors
+- [ ] Check if recent deployments broke the frontend
+- [ ] Verify database connectivity
+- [ ] Test API endpoints directly
+- [ ] Fix identified issues
+- [ ] Deploy fixes to production
+- [ ] Verify site loads correctly
+- [ ] Test all core functionality after fix
